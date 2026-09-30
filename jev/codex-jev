@@ -1,0 +1,4 @@
+#!/bin/sh
+# Runs the codex-jev build with Jev pruning enabled. Symlink into PATH.
+root="$(dirname "$(readlink -f "$0")")/.."
+CODEX_JEV_COMPACT="$root/jev/codex-jev-compact.ts" exec "$root/codex-rs/target/release/codex" "$@"
