@@ -241,6 +241,33 @@ async fn run_remote_compact_task_inner_impl(
     sess.emit_turn_item_started(turn_context, &compaction_item)
         .await;
 
+    // Jev pruning keeps the surviving items verbatim, initial context included, so the current
+    // reference context stays valid and nothing is re-injected.
+    if let Some(pruned) =
+        crate::compact_jev::prune_history(sess.clone_history().await.annotated_items()).await
+    {
+        let (window_number, window_ids) = sess.advance_auto_compact_window().await;
+        let reference_context_item = sess.reference_context_item().await;
+        sess.replace_compacted_history(
+            pruned,
+            reference_context_item,
+            /*world_state_baseline*/ None,
+            CompactedHistoryMetadata {
+                message: String::new(),
+                window_number,
+                window_ids,
+                compaction_response_id: None,
+                compaction_model_hash: None,
+                reviewer_compaction_hash: None,
+            },
+        )
+        .await;
+        sess.recompute_token_usage(turn_context).await;
+        sess.emit_turn_item_completed(turn_context, compaction_item)
+            .await;
+        return Ok(());
+    }
+
     let attempt = run_remote_compact_v2_attempt(
         sess,
         step_context,
