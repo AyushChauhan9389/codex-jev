@@ -9,7 +9,7 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { compactMessages, reductionRatio, type Message } from './lib/index.ts';
 
-const MIN_REDUCTION = Number(process.env.JEV_MIN_REDUCTION ?? 0.25);
+const MIN_REDUCTION = Number(process.env.JEV_MIN_REDUCTION ?? 0.15);
 
 type Item = { type: string; [key: string]: any };
 type Call = { id: string; tool: string; input: Record<string, unknown> };

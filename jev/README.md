@@ -36,6 +36,6 @@ The Linux ChatGPT desktop app runs `codex app-server` and honors `CODEX_CLI_PATH
 running app first). The fork must match the Codex version the app bundles
 (`/usr/lib/chatgpt/resources/codex --version`).
 
-Knobs: `JEV_MIN_REDUCTION` (default `0.25`) for the helper; Codex's own
+Knobs: `JEV_MIN_REDUCTION` (default `0.15`) for the helper; Codex's own
 `model_auto_compact_token_limit` decides when compaction runs. Keep that limit well above the
 base context, or a prune that stays over it triggers another compaction straight away.
